@@ -1,0 +1,39 @@
+<html>
+
+<head>
+    <title>Page Title</title>
+    <link rel="stylesheet" href="./style/style.css">
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="item1">
+            <h1 style="text-align: center;">Grocery List Application<h1></h1>
+            <h3 id="message"></h3>
+        </div>
+        <div class="item2">
+            <div style="width: 50%;">
+                <div id="user-names">
+                    <input type="text" placeholder="Enter your name" id="user-name"></input>
+                    <input type="submit" id="add-user-name"></input>
+                </div>
+
+                <div class="hide" id="user-items">
+                    <input type="text" placeholder="Enter item name" id="item"></input>
+                    <button id="save">Save</button>
+                    <button id="add-new-user"> Add New User</button>
+                    <p>Limit of grocerry list : <b id="limit"></b></p>
+                    <p class="hide" id="warning-message"> You have reached limit</p>
+                    <p class="hide" id=error-message>Sorry you can't add more items</p>
+                    <div id="list-container">
+                        <ul id="list"></ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+<script src="./js/grocerry.js"></script>
+</html>

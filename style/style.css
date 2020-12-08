@@ -1,0 +1,70 @@
+#add-new-user {
+    height: 5%;
+    width: 15%;
+    cursor: pointer;
+}
+body {
+    margin: 0%;
+}
+
+#save {
+    height: 5%;
+    width: 10%;
+    cursor: pointer;
+}
+
+#message {
+    text-align: center;
+}
+
+.hide {
+    display: none;
+}
+
+.show {
+    display: block;
+}
+
+input[type='text'] {
+    margin-top: 2%;
+    height: 5%;
+    width: 55%;
+}
+
+input[type='submit'] {
+    margin-top: 2%;
+    height: 5%;
+    width: 16%;
+    cursor: pointer;
+}
+
+.item1 {
+    background-color: blanchedalmond;
+    display: block;
+    height: 15%;
+}
+
+.item2 {
+    background-image:url(../images/Background3.jpg);
+    background-size:cover;
+    display: flex;
+    justify-content: center;
+    height: 85%;
+    font-size: larger;
+    color: aquamarine;
+}
+
+#list-container {
+    align-items: center;
+}
+
+.item3 {
+    background-color: cornflowerblue;
+    display: block;
+    height: 15%;
+}
+
+.deleteButton {
+    margin-left: 5%;
+    cursor: pointer;
+}
