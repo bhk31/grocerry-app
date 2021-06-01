@@ -1,0 +1,22 @@
+{
+  "name": "grocerry-app",
+  "version": "1.0.0",
+  "description": "Grocery list application",
+  "main": "index.html",
+  "scripts": {
+    "develop": "serve ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bhk31/grocerry-app.git"
+  },
+  "author": "Bhavesh Khandelwal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bhk31/grocerry-app/issues"
+  },
+  "homepage": "https://github.com/bhk31/grocerry-app#readme",
+  "dependencies": {
+    "serve": "^11.3.2"
+  }
+}

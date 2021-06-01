@@ -1,130 +1,248 @@
-let user = {
-    canAddItem: true,
-};
-
 const LIMIT = 5;
 
-addItemToItems = addListItem();
+setBodyHeight();
 
-document.getElementsByClassName('deleteButton').onclick = function() {
-console.log(this.id);
-}
+let user = {
+  canAddItem: true,
+  items: [],
+};
 
-// document.getElementById('add-item').onclick = function() {
+getSelectedElement("login").onclick = function () {
+  user.userName = getInputElementFromForm("login-form", "user-name");
 
-//     if( user.canAddItem === true) {
-//         addItemToItems();
-//     } else {
-//         document.getElementById('error-message').classList.remove('hide');
-//     }
+  if (user.userName === "") {
+    removeHtmlClass("required-field-user", "hide");
+    return;
+  }
 
-// }
+  users = getUsers();
 
-document.getElementById('add-user-name').onclick = function() {
+  if (users && users[user.userName]) {
+    user = users[user.userName];
+    let strHtml = "";
 
-user.userName = document.getElementById('user-name').value;
-
-if(localStorage.length != 0) {
-    if(typeof localStorage.getItem(user.userName) == "string") {
-        user = JSON.parse(localStorage.getItem(user.userName));
+    if (user.limit !== 5) {
+      user.items.forEach((element) => {
+        strHtml = strHtml + createListItem(element);
+      });
     }
-}
 
-if(user.limit !== 5) {
-    user.items.forEach(element => {
-        createListItem(element);
+    getSelectedElement("listContainer").insertAdjacentHTML(
+      "beforeend",
+      strHtml
+    );
+  }
 
-    });
-}
+  removeHtmlClass("loggedIn", "hide");
+  addHtmlClass("loginContainer", "hide");
+  setInnerHtml("heading", "Welcome " + user.userName + " to your grocery list");
 
-if(false === user.canAddItem) {
+  if (false === user.canAddItem) {
     warningAndDisableButton();
+  }
+
+  setLimitHtml(LIMIT - user.items.length);
+};
+
+function createListItem(element) {
+  return (
+    '<div class="list-item" id="'+element+'"><div class="item-name">' +
+    element +
+    '<input type="hidden" value="'+element+'" name="'+element+'" value="'+element+'"></input>' +
+    '<button class="hide" id="update-' +
+    element +
+    '"onclick="updateItem(\'' +
+    element +
+    '\')">Update</button>'+
+    '<button class="hide" id="cancel-' +
+    element +
+    '"onclick="cancelItem(\'' +
+    element +
+    '\')">Cancel</button>'+
+    '</div><div class="button-container"><button id="delete-' +
+    element +
+    '"onclick="deleteItem(\'' +
+    element +
+    '\')">Delete</button><button id="edit-' +
+    element +
+    '" onclick="editItem(\'' +
+    element +
+    "')\">Edit</button></div></div>"
+  );
 }
 
-document.getElementById('user-names').classList.add('hide')
-document.getElementById('user-items').classList.remove("hide");
-document.getElementById('message').innerHTML = 'Welcome ' + user.userName + ' to your Grocery list';
-document.getElementById('limit').innerHTML =  LIMIT - user.items.length;
-}
+getSelectedElement("save").onclick = function () {
+  if (true === user.canAddItem) {
+    addItemToItems();
+  }
 
-function addListItem() {
-user.items = [];
-let count = 0;
+  save();
+};
 
-return function addToArray() {
-    let item = document.getElementById('item').value;
-    
-    createListItem(item);
-    
-    user.items.push(item);
-    
-    user.limit = LIMIT - user.items.length;
-    document.getElementById('limit').innerHTML = user.limit
-    
-    if( 5 === user.items.length) {
+function addItemToItems() {
+  let item = getInputElementFromForm("grocerry-form", "item");
+
+  if (item) {
+    addHtmlClass("required-field", "hide");
+
+    if (false === compareListItems(item)) {
+      addHtmlClass("existing-item", "hide");
+
+      let strHtml = createListItem(item);
+
+      getSelectedElement("listContainer").insertAdjacentHTML(
+        "beforeend",
+        strHtml
+      );
+
+      user.items.push(item);
+
+      user.limit = LIMIT - user.items.length;
+      setLimitHtml(user.limit);
+
+      if (5 === user.items.length) {
         user.canAddItem = false;
         warningAndDisableButton();
+      }
+      console.log(user);
+    } else {
+      removeHtmlClass("existing-item", "hide");
     }
-    console.log(user);
-}
-}
-
-function save() {
-localStorage.setItem(user.userName, JSON.stringify(user));
-console.log(localStorage.getItem(user.userName));
+  } else {
+    removeHtmlClass("required-field", "hide");
+  }
 }
 
-
-document.getElementById('save').onclick = function() {
-
-if(true === user.canAddItem ) {
-    addItemToItems()
-}
-
-save();
+function compareListItems(item) {
+  return user.items.includes(item);
 }
 
 function warningAndDisableButton() {
-document.getElementById('warning-message').classList.remove('hide');
+  removeHtmlClass("warning-message", "hide");
 }
 
-function createListItem(element) {
-let listItem = document.createElement("li");
-listItem.setAttribute('data-element', element)
+function save() {
+  let users = {};
 
-let listText = document.createTextNode(element);
+  if (getUsers(false)) {
+    users = getUsers();
+  }
 
-let btn =  document.createElement("BUTTON");
-let buttonText = document.createTextNode('Delete')
-btn.appendChild(buttonText);
-btn.setAttribute('class', 'deleteButton');
-btn.setAttribute('id', element);
-btn.setAttribute('onclick', 'deleteItem(\''+element+'\')');
+  let key = user.userName;
+  users[key] = user;
 
-listItem.appendChild(listText);
-listItem.append(btn);
+  console.log(JSON.stringify(users));
+  setUsers(users);
 
-document.getElementById('list').appendChild(listItem);
+  users = getUsers(true);
+  keys = Object.keys(users);
+  let usersCount = keys.length;
+
+  if (4 === usersCount) {
+    deleteAndUpdateUsers(users, keys);
+  }
 }
 
-document.getElementById('add-new-user').onclick = function() {
-location.reload();
+function deleteAndUpdateUsers(users, keys) {
+  delete users[keys[0]];
+  setUsers(users);
 }
 
 function deleteItem(element) {
+  user.items = user.items.filter(function (item) {
+    return item !== element;
+  });
 
-user.items = user.items.filter(function(item) {
-    return item !== element
-});
+  if (5 > user.items.length) {
+    user.canAddItem = true;
+    user.limit = LIMIT - user.items.length;
+    addHtmlClass("warning-message", "hide");
+  }
 
-if(5 > user.items.length) {
-    user.canAddItem =true;
-    user.limit = LIMIT-user.items.length;
-    document.getElementById('warning-message').classList.add('hide');
+  getSelectedElement("delete-" + element).parentNode.parentNode.remove();
+  setLimitHtml(user.limit);
+
+  save();
 }
 
-document.getElementById(element).parentNode.remove()
-document.getElementById('limit').innerHTML = user.limit;
+function getSelectedElement(element) {
+  return document.getElementById(element);
+}
 
-save();        
+function getInputElementFromForm(form, input) {
+  let formData = new FormData(getSelectedElement(form));
+  return formData.get(input);
+}
+
+function addHtmlClass(element, className) {
+  getSelectedElement(element).classList.add(className);
+}
+
+function removeHtmlClass(element, className) {
+  getSelectedElement(element).classList.remove(className);
+}
+
+function setBodyHeight() {
+  let h = window.innerHeight;
+  document.querySelector("body").setAttribute("style", "height:" + h);
+}
+
+function setInnerHtml(element, html) {
+  getSelectedElement(element).innerHTML = html;
+}
+
+function setLimitHtml(html) {
+  setInnerHtml("limit", html);
+}
+
+function getUsers(isParsed = true) {
+  if (true === isParsed) {
+    return JSON.parse(localStorage.getItem("users"));
+  }
+
+  return localStorage.getItem("users");
+}
+
+function setUsers(users) {
+  localStorage.setItem("users", JSON.stringify(users));
+}
+
+function editItem(element) {
+  document.getElementById("edit-" + element).parentElement.parentElement.childNodes[0].childNodes[0].nodeValue = ''
+  removeHtmlClass('update-'+element, 'hide');
+  removeHtmlClass('cancel-'+element, 'hide');
+  console.log(document.getElementById("edit-" + element).parentElement.parentElement.childNodes[0].childNodes[1].setAttribute('type', 'text'));
+}
+
+function updateItem(element) {
+  
+  const newValue = document.querySelector('input[name="'+element+'"]').value;
+
+  user.items.map((value, index) => {
+    if( value === element ) {
+      user.items[index] = newValue
+    }
+  });
+
+  save();
+  getSelectedElement(element).remove();
+
+  const strHtml = createListItem(newValue);
+
+  getSelectedElement("listContainer").insertAdjacentHTML(
+    "beforeend",
+    strHtml
+  );
+
+}
+
+
+function cancelItem(element) {
+  const inputElement = getSelectedElement(element).querySelector('input');
+  inputElement.setAttribute('type', 'hidden');
+  document.getElementById("edit-" + element).parentElement.parentElement.childNodes[0].childNodes[0].nodeValue = element;
+//   inputElement.insertAdjacentText('beforebegin', element);
+  getSelectedElement(`update-${element}`).addHtmlClass;
+  addHtmlClass(`update-${element}`, 'hide')
+  addHtmlClass(`cancel-${element}`, 'hide')
 }

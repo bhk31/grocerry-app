@@ -1,39 +1,56 @@
 <html>
+  <head>
+    <title>Grocery List App</title>
+    <link rel="stylesheet" href="./style/style.css" />
+    <title>Grocery List app</title>
+  </head>
 
-<head>
-    <title>Page Title</title>
-    <link rel="stylesheet" href="./style/style.css">
-
-</head>
-
-<body>
-    <div class="container">
-        <div class="item1">
-            <h1 style="text-align: center;">Grocery List Application<h1></h1>
-            <h3 id="message"></h3>
+  <body>
+    <div id="loginContainer">
+      <h3>Login to grocerry list</h3>
+      <img src="images/list.png" alt="" style="width: 12%" ;" />
+      <form action="#" id="login-form">
+        <div>
+          <input
+            type="text"
+            id="user-name"
+            name="user-name"
+            placeholder="Enter you name Ex.John"
+            value=""
+          />
+          <p id="required-field-user" class="hide">This is required field *</p>
+          <input type="button" value="Login" id="login" />
         </div>
-        <div class="item2">
-            <div style="width: 50%;">
-                <div id="user-names">
-                    <input type="text" placeholder="Enter your name" id="user-name"></input>
-                    <input type="submit" id="add-user-name"></input>
-                </div>
-
-                <div class="hide" id="user-items">
-                    <input type="text" placeholder="Enter item name" id="item"></input>
-                    <button id="save">Save</button>
-                    <button id="add-new-user"> Add New User</button>
-                    <p>Limit of grocerry list : <b id="limit"></b></p>
-                    <p class="hide" id="warning-message"> You have reached limit</p>
-                    <p class="hide" id=error-message>Sorry you can't add more items</p>
-                    <div id="list-container">
-                        <ul id="list"></ul>
-                    </div>
-                </div>
-
-            </div>
-        </div>
+      </form>
     </div>
-</body>
-<script src="./js/grocerry.js"></script>
+
+    <div class="container hide" id="loggedIn">
+      <h1 id="heading">Welcome Bhavesh to your grocery list</h1>
+
+      <div class="main-container">
+        <form id="grocerry-form" action="#">
+          <input
+            type="text"
+            id="item"
+            name="item"
+            placeholder="Enter item you want to add to list."
+          />
+          <input type="button" value="Save" id="save" />
+        </form>
+        <div class="message-container">
+          <span id="required-field" class="hide">This is required field *</span>
+          <span id="warning-message" class="hide"> You have reached limit</span>
+          <span id="existing-item" class="hide"
+            >Item already exists in the list</span
+          >
+          <span id="limit-warning"
+            >Limit of grocerry list : <b id="limit">3</b></span
+          >
+        </div>
+
+        <div id="listContainer"></div>
+      </div>
+    </div>
+  </body>
+  <script src="./js/grocerry.js"></script>
 </html>
